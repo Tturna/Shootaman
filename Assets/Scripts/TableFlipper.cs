@@ -4,6 +4,8 @@ using Tturna.Interaction;
 public class TableFlipper : Tt_Interactable
 {
     Rigidbody rb;
+    bool flipOnCooldown;
+    float flipCooldownTime = 1, flipTimer;
 
     private void Start()
     {
@@ -22,9 +24,19 @@ public class TableFlipper : Tt_Interactable
         {
             rb.AddRelativeTorque(Vector3.right * 20);
         }
+
+        if (flipOnCooldown)
+        {
+            flipTimer -= Time.deltaTime;
+            if (flipTimer <= 0)
+            {
+                flipOnCooldown = false;
+                flipTimer = flipCooldownTime;
+            }
+        }
     }
 
-    public override void Activate(GameObject interactionSource)
+    public override void Interact(GameObject interactionSource)
     {
         float distToForward = Vector3.Distance(interactionSource.transform.forward, transform.forward);
         float distToBackward = Vector3.Distance(interactionSource.transform.forward, -transform.forward);
@@ -33,5 +45,7 @@ public class TableFlipper : Tt_Interactable
 
         rb.AddForce(Vector3.up * 30, ForceMode.Impulse);
         rb.AddRelativeTorque(rotationDirection * 250, ForceMode.Impulse);
+
+        flipOnCooldown = true;
     }
 }

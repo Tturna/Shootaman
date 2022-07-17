@@ -85,8 +85,7 @@ namespace Tturna.Interaction
 
             if (rayOrigin == Vector3.zero) return;
 
-            RaycastHit hitInfo;
-            bool rayHit = Physics.Raycast(rayOrigin, cam.transform.forward, out hitInfo, maxInteractionDistance, interactLayer);
+            bool rayHit = Physics.Raycast(rayOrigin, cam.transform.forward, out RaycastHit hitInfo, maxInteractionDistance, interactLayer);
 
             if (!rayHit)
             {
@@ -124,7 +123,7 @@ namespace Tturna.Interaction
         {
             if (!targetInteractable) return;
 
-            targetInteractable.Activate(gameObject);
+            targetInteractable.Interact(gameObject);
             Interaction?.Invoke(targetInteractable, gameObject);
             if (destroyInteractTarget) Destroy(targetInteractable);
         }

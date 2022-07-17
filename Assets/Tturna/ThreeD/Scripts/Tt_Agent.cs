@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Tturna.ThreeD
 {
+    [RequireComponent(typeof(Rigidbody))]
     public class Tt_Agent : MonoBehaviour, IHealth
     {
         public float currentHealth;
@@ -17,6 +18,12 @@ namespace Tturna.ThreeD
                 currentHealth = 0;
                 Death();
             }
+        }
+
+        public virtual void AddHealth(float amount, GameObject source)
+        {
+            currentHealth += amount;
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
         }
 
         public virtual void Death() { }

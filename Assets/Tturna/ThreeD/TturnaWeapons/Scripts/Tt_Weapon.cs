@@ -30,8 +30,6 @@ namespace Tturna.ThreeD.Weapons
 
         public bool Fire(Vector3 fireOrigin, Transform lookHitTransform, Vector3 lookPoint, float lookPointDistance, bool shakeCamera)
         {
-            // TODO: Refactor this function as it is used by both enemies and the player
-
             if (currentMagCapacity == 0) return false;
 
             currentMagCapacity--;

@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 6727022531277783878}
   - component: {fileID: 8845025757463607180}
   - component: {fileID: 7889829023770929926}
-  m_Layer: 0
+  - component: {fileID: 8419989997733995133}
+  - component: {fileID: 3270989980163133163}
+  m_Layer: 7
   m_Name: vendingmachine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -200.338, z: 0}
 --- !u!33 &6727022531277783878
 MeshFilter:
@@ -99,5 +101,32 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.0062267915, y: 0.0135, z: 0.006857731}
-  m_Center: {x: -0.0009826755, y: -0.00045115128, z: -0.002959102}
+  m_Size: {x: 0.0062267915, y: 0.012, z: 0.006857731}
+  m_Center: {x: -0.0009826755, y: 0.0025, z: -0.002959102}
+--- !u!114 &8419989997733995133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7043388337106966105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08cdfec3dcb76224faa82690e3939fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPrefab: {fileID: 0}
+  relativeCanSpawnPoint: {x: -0.00311, y: -0.00416, z: -0.00231}
+--- !u!65 &3270989980163133163
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7043388337106966105}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.003, y: 0.0005, z: 0.003}
+  m_Center: {x: -0.0023, y: -0.00695, z: -0.002}
