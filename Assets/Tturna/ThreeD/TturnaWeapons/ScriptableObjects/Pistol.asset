@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0731cddf291584340998f2ff805d8c75, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  weaponName: glawk
+  weaponType: 0
+  weaponId: 0
+  modelPrefab: {fileID: 919132149155446097, guid: f12dcd62b81f24b4fbb5934e81e7286a, type: 3}
+  animator: {fileID: 22100000, guid: 2c65efaacd306ac4e8646c3777c253f0, type: 2}
+  colliderSize: {x: 0.08, y: 0.28, z: 0.48}
+  colliderOffset: {x: 0, y: 0, z: -0.15}
+  anchorOffset: {x: -0.00022000555, y: -0.0008499898, z: 0.0000399982}
+  anchorRotationOffset: {x: 75.45236, y: 299.5488, z: 14.376597}
+  damage: 10
+  knockback: 75
+  useTime: 0.25
+  magazineCapacity: 15
+  defaultAmmoReserve: 60
+  reloadTime: 3
+  screenShakeStrength: 0.075
+  screenShakeTime: 0.05
+  shotParticleFX: {fileID: 1102987029449254473, guid: 85913f9dbd0ee904c8e749a09be5e635, type: 3}
+  muzzleParticleFX: {fileID: 3876906368262262212, guid: ca173bda89f83754994694943d35c6b8, type: 3}
+  shotParticleOffset: {x: 0, y: 0, z: 0}
+  muzzleParticleOffset: {x: 0, y: 0, z: -0.5}
