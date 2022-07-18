@@ -38,7 +38,8 @@ namespace Tturna.ThreeD.Weapons
 
             if (lookHitTransform)
             {
-                if (lookHitTransform.root.gameObject.TryGetComponent(out IHealth target))
+                IDamageable target;
+                if (lookHitTransform.gameObject.TryGetComponent(out target) || lookHitTransform.root.gameObject.TryGetComponent(out target))
                 {
                     GameObject hitObject = lookHitTransform.gameObject.TryGetComponent(out Rigidbody _) ? lookHitTransform.gameObject : null;
                     target.TakeDamage(weaponSO.damage, weaponSO.knockback, hitObject, lookPoint);

@@ -15,11 +15,13 @@ namespace Tturna.Interaction
 
         protected virtual void OnCollisionEnter(Collision collision)
         {
-            Transform root = collision.transform.root;
-            if (!root.TryGetComponent(out Tt_Agent agent)) return;
-            if (collision.impulse.magnitude < 8) return;
+            IDamageable damageable;
+            if (collision.transform.TryGetComponent(out damageable) || collision.transform.root.TryGetComponent(out damageable))
+            {
+                if (collision.impulse.magnitude < 8) return;
 
-            agent.TakeDamage(10, 125, collision.gameObject, transform.position);
+                damageable.TakeDamage(10, 125, collision.gameObject, transform.position);
+            }
         }
     }
 }

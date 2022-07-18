@@ -170,7 +170,7 @@ namespace Tturna.ThreeD.Weapons
             Rigidbody rb = weapon.GetComponent<Rigidbody>();
             rb.useGravity = true;
             rb.constraints = RigidbodyConstraints.None;
-            rb.AddForce(Camera.main.transform.forward * 30, ForceMode.Impulse);
+            rb.AddForce(Camera.main.transform.forward * 120, ForceMode.Impulse);
             rb.AddTorque(UnityEngine.Random.insideUnitSphere * 100);
             WeaponUnequipped?.Invoke(weapon);
 

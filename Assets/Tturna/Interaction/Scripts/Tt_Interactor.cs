@@ -89,7 +89,7 @@ namespace Tturna.Interaction
 
             if (!rayHit)
             {
-                Debug.DrawLine(rayOrigin, rayOrigin + cam.transform.forward * maxInteractionDistance, Color.green);
+                //Debug.DrawLine(rayOrigin, rayOrigin + cam.transform.forward * maxInteractionDistance, Color.green);
                 ClearTarget();
                 return;
             }
@@ -108,7 +108,7 @@ namespace Tturna.Interaction
                 }
             }
 
-            Debug.DrawLine(rayOrigin, hitInfo.point, Color.red);
+            //Debug.DrawLine(rayOrigin, hitInfo.point, Color.red);
             #endregion
         }
 
