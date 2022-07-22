@@ -15,15 +15,15 @@ MonoBehaviour:
   weaponName: glawk
   weaponType: 0
   weaponId: 0
-  modelPrefab: {fileID: 919132149155446097, guid: f12dcd62b81f24b4fbb5934e81e7286a, type: 3}
+  modelPrefab: {fileID: 919132149155446097, guid: 9cd60de34dafd2e45a8ef790707cced0, type: 3}
   animator: {fileID: 22100000, guid: 2c65efaacd306ac4e8646c3777c253f0, type: 2}
-  colliderSize: {x: 0.08, y: 0.28, z: 0.48}
-  colliderOffset: {x: 0, y: 0, z: -0.15}
-  anchorOffset: {x: -0.00022000555, y: -0.0008499898, z: 0.0000399982}
-  anchorRotationOffset: {x: 75.45236, y: 299.5488, z: 14.376597}
+  colliderSize: {x: 0.06, y: 0.3, z: 0.48}
+  colliderOffset: {x: 0, y: -0.03, z: 0.04}
+  anchorOffset: {x: 0.030539647, y: 0.25396287, z: 0.06812312}
+  anchorRotationOffset: {x: 284.46646, y: 242.0119, z: 297.23}
   damage: 10
   knockback: 75
-  useTime: 0.25
+  useTime: 0.22
   magazineCapacity: 15
   defaultAmmoReserve: 60
   reloadTime: 3
@@ -32,4 +32,4 @@ MonoBehaviour:
   shotParticleFX: {fileID: 1102987029449254473, guid: 85913f9dbd0ee904c8e749a09be5e635, type: 3}
   muzzleParticleFX: {fileID: 3876906368262262212, guid: ca173bda89f83754994694943d35c6b8, type: 3}
   shotParticleOffset: {x: 0, y: 0, z: 0}
-  muzzleParticleOffset: {x: 0, y: 0, z: -0.5}
+  muzzleParticleOffset: {x: -0.013, y: 0.093, z: 0.285}

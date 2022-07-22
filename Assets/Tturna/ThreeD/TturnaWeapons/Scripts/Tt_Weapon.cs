@@ -9,6 +9,8 @@ namespace Tturna.ThreeD.Weapons
     [Serializable]
     public class Tt_Weapon : Tt_Interactable
     {
+        public enum ReloadType { Magazine, Slide, Full }
+
         public Tt_WeaponScriptableObject weaponSO;
         public int currentMagCapacity;
         public int reserveAmmo;
@@ -24,7 +26,7 @@ namespace Tturna.ThreeD.Weapons
             bc.center = weaponSO.colliderOffset;
             currentMagCapacity = weaponSO.magazineCapacity;
             reserveAmmo = weaponSO.defaultAmmoReserve;
-            animator = GetComponent<Animator>();
+            animator = GetComponentInChildren<Animator>();
             animator.runtimeAnimatorController = weaponSO.animator;
         }
 
@@ -99,14 +101,25 @@ namespace Tturna.ThreeD.Weapons
             if (currentMagCapacity == weaponSO.magazineCapacity) return false;
             if (reserveAmmo == 0) return false;
 
+            string predicate = "ReloadFull";
+            if (currentMagCapacity > 0)
+            {
+                animator.SetTrigger("reloadMagazine");
+                predicate = "Reload";
+            }
+            else
+            {
+                animator.SetLayerWeight(1, 0);
+                animator.SetTrigger("reloadSlideRelease");
+                predicate = "ReloadSlide";
+            }
+
+            float l = animator.runtimeAnimatorController.animationClips.Where(n => n.name.Contains(predicate)).ToArray()[0].length;
+            StartCoroutine(Tt_Helpers.DelayExecute(reloadDoneCallback, l));
+
             int missing = weaponSO.magazineCapacity - currentMagCapacity;
             currentMagCapacity = reserveAmmo - missing >= 0 ? weaponSO.magazineCapacity : reserveAmmo;
             reserveAmmo = Mathf.Clamp(reserveAmmo - missing, 0, 999);
-
-            animator.SetLayerWeight(1, 0);
-            animator.SetTrigger("reload");
-            float l = animator.runtimeAnimatorController.animationClips.Where(n => n.name == "PistolReload").ToArray()[0].length;
-            StartCoroutine(Tt_Helpers.DelayExecute(reloadDoneCallback, l));
             return true;
         }
     }

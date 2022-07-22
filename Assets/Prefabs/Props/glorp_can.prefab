@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4888960210191783033}
   - component: {fileID: 1740807545199135768}
   m_Layer: 7
-  m_Name: glob_can
+  m_Name: glorp_can
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

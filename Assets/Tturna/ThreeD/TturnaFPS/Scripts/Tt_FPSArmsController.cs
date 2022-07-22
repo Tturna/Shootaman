@@ -33,10 +33,23 @@ namespace Tturna.ThreeD.FPS
             animator.SetTrigger($"shoot{weapon.GetComponent<Tt_Weapon>().weaponSO.weaponType}");
         }
 
-        void OnWeaponReload(Tt_Interactable weapon)
+        void OnWeaponReload(Tt_Interactable weapon, Tt_Weapon.ReloadType reloadType)
         {
+            Tt_Weapon gun = weapon.GetComponent<Tt_Weapon>();
+            string suffix = "Full";
+            
+            switch (reloadType)
+            {
+                case Tt_Weapon.ReloadType.Magazine:
+                    suffix = "";
+                    break;
 
-            animator.SetTrigger($"reload{weapon.GetComponent<Tt_Weapon>().weaponSO.weaponType}");
+                case Tt_Weapon.ReloadType.Slide:
+                    suffix = "Slide";
+                    break;
+            }
+
+            animator.SetTrigger($"reload{gun.weaponSO.weaponType + suffix}");
         }
     }
 }

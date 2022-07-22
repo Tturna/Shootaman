@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Tturna.Interaction;
+using Tturna.Utility;
 
 namespace Tturna.ThreeD.Weapons
 {
@@ -45,14 +46,14 @@ namespace Tturna.ThreeD.Weapons
         public static event Action<Tt_Interactable> WeaponEquipped;
         public static event Action<Tt_Interactable> WeaponUnequipped;
         public static event Action<Tt_Interactable> WeaponFired;
-        public static event Action<Tt_Interactable> WeaponReload;
+        public static event Action<Tt_Interactable, Tt_Weapon.ReloadType> WeaponReload;
 
         // Utility
         enum OverflowPolicy { Ignore, ReplaceSelected, ReplaceFirst, ReplaceLast }
         Image[] bulledIndicators;
         Tt_Weapon selectedWeapon;
         int selectedIndex;
-        bool reloadInAction;
+        bool reloadInAction, fireInAction;
 
         public static Tt_WeaponInventory Instance;
 
@@ -138,7 +139,7 @@ namespace Tturna.ThreeD.Weapons
                 rb.constraints = RigidbodyConstraints.FreezeAll;
 
                 weapon.GetComponent<Collider>().enabled = false;
-                weapon.GetComponent<Animator>().enabled = true;
+                weapon.GetComponentInChildren<Animator>().enabled = true;
 
                 tr.SetParent(weaponParent.transform);
                 tr.localPosition = tw.weaponSO.anchorOffset;
@@ -240,6 +241,7 @@ namespace Tturna.ThreeD.Weapons
         {
             if (!selectedWeapon) return;
             if (reloadInAction) return;
+            if (fireInAction) return;
             if (!selectedWeapon.Fire(fireOrigin, lookHitTransform, lookPoint, lookPointDistance, true)) return;
 
             bulledIndicators[selectedWeapon.currentMagCapacity].gameObject.SetActive(false);
@@ -248,6 +250,14 @@ namespace Tturna.ThreeD.Weapons
             if (selectedWeapon.currentMagCapacity == 0) reserveAmmoText.text = selectedWeapon.reserveAmmo > 0 ? "[RELOAD]" : "[EMPTY]";
 
             WeaponFired?.Invoke(inventory[selectedIndex]);
+
+            fireInAction = true;
+            StartCoroutine(Tt_Helpers.DelayExecute(ResetFire, selectedWeapon.weaponSO.useTime));
+        }
+
+        public void ResetFire()
+        {
+            fireInAction = false;
         }
 
         public void ReloadWeapon()
@@ -255,10 +265,11 @@ namespace Tturna.ThreeD.Weapons
             if (!selectedWeapon) return;
 
             // Pass a callback function so the weapon script can call it when it's done reloading
+            Tt_Weapon.ReloadType reloadType = selectedWeapon.currentMagCapacity > 0 ? Tt_Weapon.ReloadType.Magazine : Tt_Weapon.ReloadType.Slide;
             reloadInAction = selectedWeapon.Reload(ReloadDone);
             if (!reloadInAction) return;
 
-            WeaponReload?.Invoke(inventory[selectedIndex]);
+            WeaponReload?.Invoke(inventory[selectedIndex], reloadType);
         }
 
         void ReloadDone()

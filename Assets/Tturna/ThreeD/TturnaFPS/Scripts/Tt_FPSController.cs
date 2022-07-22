@@ -1,8 +1,8 @@
 using UnityEngine;
-using Tturna.ThreeD.Weapons;
 using UnityEngine.UI;
 using System.Collections;
-using Tturna.Utility;
+using Tturna.ThreeD.Weapons;
+using Tturna.Interaction;
 
 namespace Tturna.ThreeD.FPS
 {
@@ -52,6 +52,7 @@ namespace Tturna.ThreeD.FPS
             cc = GetComponent<CharacterController>();
             cam = Camera.main;
             wi = Tt_WeaponInventory.Instance;
+            Tt_WeaponInventory.WeaponFired += OnWeaponFired;
         }
 
         private void Update()
@@ -195,6 +196,13 @@ namespace Tturna.ThreeD.FPS
         public override void Death()
         {
             base.Death();
+        }
+
+        void OnWeaponFired(Tt_Interactable weapon)
+        {
+            // Add a feeling of recoil by turning the player and the camera a little bit
+            transform.Rotate(Vector3.up * Random.Range(-1f, 1f));
+            camXAngle = Mathf.Clamp(camXAngle + Random.Range(-1.5f, .5f), -90, 90);
         }
     }
 }

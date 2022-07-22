@@ -153,16 +153,29 @@ namespace Tturna.ThreeD
 
             Vector3 camToHit = hitPoint - Tt_Helpers.MainCamera.transform.position;
 
+            // Blood PFX
             ParticleSystem ps = Instantiate(bloodPFX, hitPoint, Quaternion.LookRotation(camToHit, Vector3.up));
             ps.Play();
             StartCoroutine(Tt_Helpers.DelayDestroy(ps.gameObject, ps.main.startLifetime.constant));
 
+            // Bullet wound decal
             GameObject decal = Tt_ObjectPooler.Instance.GetPoolObjectByPoolName("Bullet Wound");
             decal.transform.position = hitPoint - camToHit.normalized * 0.1f;
             decal.transform.rotation = Quaternion.LookRotation(camToHit, Vector3.up);
             decal.transform.parent = hitLimb ? hitLimb.transform : rigObject.transform.GetChild(0);
             StartCoroutine(Tt_Helpers.DelayExecute(() => decal.SetActive(false), 30));
 
+            // Blood splatter decal
+            Debug.DrawLine(hitPoint, hitPoint + camToHit.normalized * 4, Color.yellow);
+            if (Physics.Raycast(hitPoint, camToHit, out RaycastHit splatRayHit, 4, 1))
+            {
+                GameObject splatDecal = Tt_ObjectPooler.Instance.GetPoolObjectByPoolName("Blood Splatter");
+                splatDecal.transform.position = splatRayHit.point - camToHit.normalized * .3f;
+                splatDecal.transform.rotation = Quaternion.LookRotation(camToHit, Vector3.up);
+                splatDecal.transform.SetParent(splatRayHit.transform);
+                StartCoroutine(Tt_Helpers.DelayExecute(() => splatDecal.SetActive(false), 90));
+            }
+            
             if (currentHealth <= 0) { Death(knockback, hitLimb, hitPoint, camToHit); return; }
 
             Vector3 scale = healthBarForeground.transform.localScale;
