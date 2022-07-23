@@ -1,3 +1,4 @@
+using Tturna.Utility;
 using UnityEngine;
 
 namespace Tturna.ThreeD.Weapons
@@ -46,8 +47,36 @@ namespace Tturna.ThreeD.Weapons
             if (!goon.Fire(headObjectPosition, forwardRayHit.transform, forwardRayHit.point, distanceToPlayer, false))
             {
                 goon.Reload(() => { if (resetAttack) ResetAttack(); });
+                animator.SetTrigger(name: "reload");
+                return;
             }
             else if (resetAttack) ResetAttack();
+
+            animator.SetTrigger("shoot");
+        }
+
+        public override void TakeDamage(float damage, float knockback, GameObject hitLimb, Vector3 hitPoint)
+        {
+            base.TakeDamage(damage, knockback, hitLimb, hitPoint);
+            if (currentHealth <= 0) return;
+
+            if (currentHealth <= maxHealth * 0.25f)
+            {
+                int rn = Random.Range(0, 3);
+                if (rn <= 1)
+                {
+                    Debug.Log($"stun{rn + 1}");
+                    animator.SetTrigger($"stun{rn + 1}");
+                    currentHealth = 0;
+                    StartCoroutine(Tt_Helpers.DelayExecute(() => Death(0f, null, Vector3.zero, Vector3.zero), 7));
+                    return;
+                }
+            }
+
+            int rn2 = Random.Range(1, 3);
+
+            string trigger = $"hurt{rn2}";
+            animator.SetTrigger(trigger);
         }
 
         public override void Death()
@@ -58,7 +87,7 @@ namespace Tturna.ThreeD.Weapons
             if (gun && gun.transform.root == transform)
             {
                 gun.transform.SetParent(null);
-                gun.GetComponent<Animator>().enabled = false;
+                gun.GetComponentInChildren<Animator>().enabled = false;
                 gun.GetComponent<Collider>().enabled = true;
                 gun.GetComponent<Rigidbody>().AddTorque(Random.insideUnitSphere * 10, ForceMode.Impulse);
             }
