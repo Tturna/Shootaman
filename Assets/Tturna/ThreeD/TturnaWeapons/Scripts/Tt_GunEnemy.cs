@@ -55,6 +55,13 @@ namespace Tturna.ThreeD.Weapons
             animator.SetTrigger("shoot");
         }
 
+        public void TempDeth()
+        {
+            animator.SetTrigger("stun1");
+            System.Action<float> calculateLerp = (f) => cc.center = Vector3.up * Mathf.Lerp(1.05f, 1.8f, 1 - f * 5);
+            StartCoroutine(Tt_Helpers.ExecuteOverTime(calculateLerp, .5f, .2f));
+        }
+
         public override void TakeDamage(float damage, float knockback, GameObject hitLimb, Vector3 hitPoint)
         {
             base.TakeDamage(damage, knockback, hitLimb, hitPoint);
@@ -65,9 +72,17 @@ namespace Tturna.ThreeD.Weapons
                 int rn = Random.Range(0, 3);
                 if (rn <= 1)
                 {
-                    Debug.Log($"stun{rn + 1}");
                     animator.SetTrigger($"stun{rn + 1}");
                     currentHealth = 0;
+
+                    // Move character controller's capsule collider up so the stun1 animation actually looks like the guy falls on his knees.
+                    if (rn == 0)
+                    {
+                        System.Action<float> calculateLerp = (f) => cc.center = Vector3.up * Mathf.Lerp(1.05f, 1.9f, 1 - f * 5);
+                        StartCoroutine(Tt_Helpers.ExecuteOverTime(calculateLerp, .5f, .2f));
+                    }
+
+                    StopAllLocalCoroutines();
                     StartCoroutine(Tt_Helpers.DelayExecute(() => Death(0f, null, Vector3.zero, Vector3.zero), 7));
                     return;
                 }

@@ -67,7 +67,7 @@ Transform:
   m_Children:
   - {fileID: 5138557348413874752}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &5138557347659970152
 CharacterController:
@@ -379,6 +379,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e0ce949f087416b438d51aeaeca6e9dc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3488063919645288440, guid: e0ce949f087416b438d51aeaeca6e9dc, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e0ce949f087416b438d51aeaeca6e9dc, type: 3}

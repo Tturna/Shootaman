@@ -16,6 +16,7 @@ namespace Tturna.ThreeD
 
         [Header("Settings")]
         [SerializeField] protected float moveSpeed;
+        [SerializeField] float gravityMultiplier;
         [SerializeField] protected float lookSmoothSpeed;
         [SerializeField] protected AttackIntervalType attackIntervalType;
         [SerializeField] protected float attackInterval;
@@ -31,10 +32,10 @@ namespace Tturna.ThreeD
         [SerializeField] GameObject bloodDecal;
 
         // Utility
-        Transform playerTransform;
-        CharacterController cc;
-        Rigidbody[] ragdollRigidbodies;
-        List<Coroutine> coroutines = new List<Coroutine>();
+        protected Transform playerTransform;
+        protected CharacterController cc;
+        protected Rigidbody[] ragdollRigidbodies;
+        protected List<Coroutine> coroutines = new List<Coroutine>();
 
         // Shared utility
         protected Vector3 moveVector;
@@ -56,12 +57,19 @@ namespace Tturna.ThreeD
             ragdollRigidbodies = rigObject.GetComponentsInChildren<Rigidbody>();
             SwitchRagdoll(false);
 
-            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+            playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+            if (!playerTransform) Debug.LogWarning("Can't find object with tag 'Player'. Enemy behavior disabled");
         }
 
         protected void Update()
         {
             if (currentHealth <= 0) return;
+
+            // Gravity
+            cc.Move(Vector3.down * gravityMultiplier * Time.deltaTime);
+
+            if (!playerTransform) return;
 
             positionDifferenceToPlayer = playerTransform.position - headObjectPosition;
             distanceToPlayer = positionDifferenceToPlayer.magnitude;
@@ -107,7 +115,7 @@ namespace Tturna.ThreeD
 
             moveVector = isWalking ? transform.forward * moveSpeed : Vector3.zero;
 
-            cc.Move((Vector3.down * 5 + moveVector) * Time.deltaTime);
+            cc.Move(moveVector * Time.deltaTime);
 
             if (isPlayerVisible && canAttack)
             {
@@ -189,7 +197,11 @@ namespace Tturna.ThreeD
             SwitchRagdoll(true);
 
             hitLimb?.GetComponent<Rigidbody>().AddForceAtPosition(camToHit.normalized * knockback, hitPoint, ForceMode.Impulse);
+            StopAllLocalCoroutines();
+        }
 
+        public void StopAllLocalCoroutines()
+        {
             foreach (Coroutine c in coroutines)
             {
                 StopCoroutine(c);
