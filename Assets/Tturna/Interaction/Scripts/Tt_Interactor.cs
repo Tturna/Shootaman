@@ -44,6 +44,7 @@ namespace Tturna.Interaction
 
         Camera cam;
         Text promptText;
+        Image promptIcon;
         Vector3 rayOrigin;
         int interactLayer => 1 << LayerMask.NameToLayer("Interactable");
         protected Tt_Interactable targetInteractable;
@@ -57,6 +58,7 @@ namespace Tturna.Interaction
                 try
                 {
                     promptText = GameObject.Find("Interact Prompt").GetComponent<Text>();
+                    promptIcon = promptText.transform.GetChild(0).GetComponent<Image>();
                 }
                 catch
                 {
@@ -100,6 +102,9 @@ namespace Tturna.Interaction
                 {
                     targetInteractable = interactable;
                     promptText.text = "[F]";
+
+                    promptIcon.sprite = interactable.interactIndicatorIcon;
+                    promptIcon.color = interactable.interactIndicatorIcon ? Color.white : Color.clear;
                 }
                 else
                 {
@@ -116,7 +121,12 @@ namespace Tturna.Interaction
         {
             targetInteractable = null;
 
-            if (showInteractPrompt) promptText.text = "";
+            if (showInteractPrompt)
+            {
+                promptText.text = "";
+                promptIcon.sprite = null;
+                promptIcon.color = Color.clear;
+            }
         }
 
         protected virtual void Interact()

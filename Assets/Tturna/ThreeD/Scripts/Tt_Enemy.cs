@@ -4,9 +4,10 @@
  * - Consider using an animation controller state machine for behavior states
  */
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Tturna.Utility;
-using System.Collections.Generic;
 
 namespace Tturna.ThreeD
 {
@@ -18,13 +19,15 @@ namespace Tturna.ThreeD
         [SerializeField] protected float moveSpeed;
         [SerializeField] float gravityMultiplier;
         [SerializeField] protected float lookSmoothSpeed;
+        [SerializeField] float aggroDistance;
         [SerializeField] protected AttackIntervalType attackIntervalType;
         [SerializeField] protected float attackInterval;
         [SerializeField, Tooltip("How far the enemy has to be from the player before it starts following the player.")] protected float followPlayerThreshold;
         [SerializeField, Tooltip("How close the enemy has to be to the player before it stops following the player.")] protected float stopFollowPlayerThreshold;
 
         [Header("References")]
-        [SerializeField, Tooltip("The point from which the enemy should look at the player.")] protected GameObject headObject;
+        [SerializeField, Tooltip("The point from which the enemy should look at the player.")] protected GameObject lookSource;
+        [SerializeField, Tooltip("Array of objects that cause critical hits when damaged.")] protected GameObject[] criticalObjects;
         [SerializeField] GameObject healthBar;
         [SerializeField] GameObject healthBarForeground;
         [SerializeField] GameObject rigObject;
@@ -37,13 +40,12 @@ namespace Tturna.ThreeD
         protected Rigidbody[] ragdollRigidbodies;
         protected List<Coroutine> coroutines = new List<Coroutine>();
 
-        // Shared utility
         protected Vector3 moveVector;
         protected Vector3 lookDirection;
         protected Vector3 positionDifferenceToPlayer;
-        protected Vector3 headObjectPosition => headObject.transform.position;
+        protected Vector3 headObjectPosition => lookSource.transform.position;
         protected Animator animator;
-        protected bool isAggrevated, isWalking, canAttack, isPlayerVisible;
+        protected bool isAggrevated, isWalking, canAttack, isPlayerVisible, isStunned;
         protected float distanceToPlayer;
         protected int rayMask => LayerMask.GetMask(new string[] { "Default", "Player", "Interactable" });
 
@@ -69,18 +71,22 @@ namespace Tturna.ThreeD
             // Gravity
             cc.Move(Vector3.down * gravityMultiplier * Time.deltaTime);
 
+            // Turn healthbar towards main camera
+            if (healthBar.activeInHierarchy)
+            {
+                healthBar.transform.LookAt(headObjectPosition + (headObjectPosition - Tt_Helpers.MainCamera.transform.position).normalized);
+            }
+
             if (!playerTransform) return;
+            if (isStunned) return;
 
             positionDifferenceToPlayer = playerTransform.position - headObjectPosition;
             distanceToPlayer = positionDifferenceToPlayer.magnitude;
 
             // Raycast towards player to see if they're directly visible
-            bool playerRayHit = Physics.Raycast(headObjectPosition, positionDifferenceToPlayer.normalized, out RaycastHit playerRayResult, 20, rayMask);
+            bool playerRayHit = Physics.Raycast(headObjectPosition, positionDifferenceToPlayer.normalized, out RaycastHit playerRayResult, aggroDistance, rayMask);
 
             isPlayerVisible = playerRayHit && playerRayResult.transform.CompareTag("Player");
-
-            // Turn healthbar towards main camera
-            healthBar.transform.LookAt(headObjectPosition + (headObjectPosition - Tt_Helpers.MainCamera.transform.position).normalized);
 
             CheckForAggro();
 
@@ -152,9 +158,11 @@ namespace Tturna.ThreeD
 
         public override void TakeDamage(float damage, float knockback, GameObject hitLimb, Vector3 hitPoint)
         {
-            // TODO: Figure out an alternative way of checking for headshots
-            // Checking gameobject names is bad because they can change easily
-            if (hitLimb && hitLimb.name == "spine.005") damage *= 5;
+            // Check for critical hits
+            if (hitLimb && criticalObjects.Contains(hitLimb))
+            {
+                damage *= 5;
+            }
 
             currentHealth -= damage;
             if (currentHealth < 0) currentHealth = 0;
@@ -174,14 +182,19 @@ namespace Tturna.ThreeD
             StartCoroutine(Tt_Helpers.DelayExecute(() => decal.SetActive(false), 30));
 
             // Blood splatter decal
-            Debug.DrawLine(hitPoint, hitPoint + camToHit.normalized * 4, Color.yellow);
             if (Physics.Raycast(hitPoint, camToHit, out RaycastHit splatRayHit, 4, 1))
             {
-                GameObject splatDecal = Tt_ObjectPooler.Instance.GetPoolObjectByPoolName("Blood Splatter");
+                //GameObject splatDecal = Tt_ObjectPooler.Instance.GetPoolObjectByPoolName("Blood Splatter");
+
+                // TODO: Idk maybe instantiate like a shit load of these but don't like pool them. They should stick around
+                GameObject splatDecal = Instantiate(Tt_ObjectPooler.Instance.GetPoolObjectByPoolName("Blood Splatter"));
+
                 splatDecal.transform.position = splatRayHit.point - camToHit.normalized * .3f;
                 splatDecal.transform.rotation = Quaternion.LookRotation(camToHit, Vector3.up);
                 splatDecal.transform.SetParent(splatRayHit.transform);
-                StartCoroutine(Tt_Helpers.DelayExecute(() => splatDecal.SetActive(false), 90));
+
+
+                //StartCoroutine(Tt_Helpers.DelayExecute(() => splatDecal.SetActive(false), 90));
             }
             
             if (currentHealth <= 0) { Death(knockback, hitLimb, hitPoint, camToHit); return; }
@@ -191,12 +204,20 @@ namespace Tturna.ThreeD
             healthBarForeground.transform.localScale = scale;
         }
 
-        public override void Death(float knockback, GameObject hitLimb, Vector3 hitPoint, Vector3 camToHit)
+        protected void DisableHealthBar()
         {
             healthBar.SetActive(false);
+        }
+
+        public override void Death(float knockback, GameObject hitLimb, Vector3 hitPoint, Vector3 camToHit)
+        {
+            // Set health to 0 in case death is called without taking damage (e.g. after being stunned for a moment)
+            currentHealth = 0;
+
+            DisableHealthBar();
             SwitchRagdoll(true);
 
-            hitLimb?.GetComponent<Rigidbody>().AddForceAtPosition(camToHit.normalized * knockback, hitPoint, ForceMode.Impulse);
+            hitLimb?.GetComponent<Rigidbody>().AddForceAtPosition(camToHit.normalized * knockback * 2, hitPoint, ForceMode.Impulse);
             StopAllLocalCoroutines();
         }
 

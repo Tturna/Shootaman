@@ -9,6 +9,8 @@ namespace Tturna.Interaction
 {
     public class Tt_Interactable : MonoBehaviour
     {
+        public Sprite interactIndicatorIcon;
+
         public virtual void Interact(GameObject interactionSource) { }
 
         public virtual void Activate(GameObject interactionSource) { }

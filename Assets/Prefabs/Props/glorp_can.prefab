@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 3552292899208742774}
   - component: {fileID: 264154915469604989}
   - component: {fileID: 4888960210191783033}
-  - component: {fileID: 1740807545199135768}
   m_Layer: 7
   m_Name: glorp_can
   m_TagString: Untagged
@@ -131,15 +130,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.01, y: 0.02, z: 0.01}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1740807545199135768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1650242015673906580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81943f59fe72a904bb07abff05e794b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

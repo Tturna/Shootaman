@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 81d0c29c09e19784e824b0a61872f6e9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: furry
     second: {fileID: 2100000, guid: 6404b8b4a4be0f0418750fe1e430c76d, type: 2}
   materials:

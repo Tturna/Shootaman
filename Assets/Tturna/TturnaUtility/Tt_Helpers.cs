@@ -15,7 +15,7 @@ namespace Tturna.Utility
         public static IEnumerator DelayExecute(Action method, float delay)
         {
             yield return new WaitForSeconds(delay);
-            method();
+            if (method != null) method();
         }
 
         public static Camera MainCamera => Camera.main;

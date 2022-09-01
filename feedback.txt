@@ -1,0 +1,12 @@
+Gameplay Demo 1
+
+Issues:
+
+- game started on JTB's second monitor
+- tables probably still fucked (unnatural wobblying when flipping on one side)
+- performance probably ass
+- recoil sucks
+	- the recoil needs to come back down (lerp probably)
+
+- interacting through walls bug
+- glorp machine fix

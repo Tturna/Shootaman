@@ -78,6 +78,7 @@ namespace Tturna.ThreeD.Weapons
             }
 
             if (selectedWeapon) SwitchMagazineIndicator(true);
+            else SwitchMagazineIndicator(false);
         }
 
         private void Update()

@@ -17,10 +17,12 @@ namespace Tturna.ThreeD.Weapons
 
         ParticleSystem ps;
         Animator animator;
+        Rigidbody rb;
 
         private void Start()
         {
             Instantiate(weaponSO.modelPrefab, transform);
+            rb = GetComponent<Rigidbody>();
             BoxCollider bc = GetComponent<BoxCollider>();
             bc.size = weaponSO.colliderSize;
             bc.center = weaponSO.colliderOffset;
@@ -28,6 +30,17 @@ namespace Tturna.ThreeD.Weapons
             reserveAmmo = weaponSO.defaultAmmoReserve;
             animator = GetComponentInChildren<Animator>();
             animator.runtimeAnimatorController = weaponSO.animator;
+            interactIndicatorIcon = weaponSO.interactIndicatorIcon;
+        }
+
+        // TODO: This is fixing a symptom instead of the problem.
+        // Sometimes when you throw a pistol, it gets fucking launched. no clue
+        private void Update()
+        {
+            if (rb.velocity.magnitude > 25)
+            {
+                rb.velocity = rb.velocity.normalized * 20;
+            }
         }
 
         public bool Fire(Vector3 fireOrigin, Transform lookHitTransform, Vector3 lookPoint, float lookPointDistance, bool shakeCamera)

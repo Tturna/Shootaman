@@ -55,13 +55,6 @@ namespace Tturna.ThreeD.Weapons
             animator.SetTrigger("shoot");
         }
 
-        public void TempDeth()
-        {
-            animator.SetTrigger("stun1");
-            System.Action<float> calculateLerp = (f) => cc.center = Vector3.up * Mathf.Lerp(1.05f, 1.8f, 1 - f * 5);
-            StartCoroutine(Tt_Helpers.ExecuteOverTime(calculateLerp, .5f, .2f));
-        }
-
         public override void TakeDamage(float damage, float knockback, GameObject hitLimb, Vector3 hitPoint)
         {
             base.TakeDamage(damage, knockback, hitLimb, hitPoint);
@@ -73,14 +66,18 @@ namespace Tturna.ThreeD.Weapons
                 if (rn <= 1)
                 {
                     animator.SetTrigger($"stun{rn + 1}");
-                    currentHealth = 0;
+                    currentHealth = 1;
+                    isAggrevated = false;
+                    isStunned = true;
+                    DisableHealthBar();
 
-                    // Move character controller's capsule collider up so the stun1 animation actually looks like the guy falls on his knees.
-                    if (rn == 0)
-                    {
-                        System.Action<float> calculateLerp = (f) => cc.center = Vector3.up * Mathf.Lerp(1.05f, 1.9f, 1 - f * 5);
-                        StartCoroutine(Tt_Helpers.ExecuteOverTime(calculateLerp, .5f, .2f));
-                    }
+                    // Move character controller's capsule collider up so the stun animation doesn't make the guy float.
+                    float lerpB = rn == 0 ? 1.6f : 1.2f;
+                    float delay = rn == 0 ? .5f : .25f;
+                    float duration = rn == 0 ? .2f : .5f;
+
+                    System.Action<float> calculateLerp = (f) => cc.center = Vector3.up * Mathf.Lerp(1.075f, lerpB, 1 - f * 5);
+                    StartCoroutine(Tt_Helpers.ExecuteOverTime(calculateLerp, delay, duration));
 
                     StopAllLocalCoroutines();
                     StartCoroutine(Tt_Helpers.DelayExecute(() => Death(0f, null, Vector3.zero, Vector3.zero), 7));
@@ -94,9 +91,9 @@ namespace Tturna.ThreeD.Weapons
             animator.SetTrigger(trigger);
         }
 
-        public override void Death()
+        public override void Death(float knockback, GameObject hitLimb, Vector3 hitPoint, Vector3 camToHit)
         {
-            base.Death();
+            base.Death(knockback, hitLimb, hitPoint, camToHit);
 
             // If the enemy is holding a gun, drop it
             if (gun && gun.transform.root == transform)

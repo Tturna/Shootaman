@@ -13,6 +13,7 @@ namespace Tturna.ThreeD.Weapons
         public int weaponId;
         public GameObject modelPrefab;
         public RuntimeAnimatorController animator;
+        public Sprite interactIndicatorIcon;
 
         [Header("Offsets")]
         public Vector3 colliderSize;

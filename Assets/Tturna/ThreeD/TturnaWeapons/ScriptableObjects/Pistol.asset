@@ -17,6 +17,7 @@ MonoBehaviour:
   weaponId: 0
   modelPrefab: {fileID: 919132149155446097, guid: 9cd60de34dafd2e45a8ef790707cced0, type: 3}
   animator: {fileID: 22100000, guid: 2c65efaacd306ac4e8646c3777c253f0, type: 2}
+  interactIndicatorIcon: {fileID: 21300000, guid: c9497eedb10708848997238a250721d4, type: 3}
   colliderSize: {x: 0.06, y: 0.3, z: 0.48}
   colliderOffset: {x: 0, y: -0.03, z: 0.04}
   anchorOffset: {x: 0.030539647, y: 0.25396287, z: 0.06812312}

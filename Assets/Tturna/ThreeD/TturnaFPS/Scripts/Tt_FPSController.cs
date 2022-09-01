@@ -14,8 +14,6 @@ namespace Tturna.ThreeD.FPS
         [SerializeField] float slideMultiplier;
         [SerializeField] float moveSmoothSpeed;
         [SerializeField] float gravityMultiplier;
-        [SerializeField] float horizontalSensitivity;
-        [SerializeField] float verticalSensitivity;
         [SerializeField] AnimationCurve jumpVelocityCurve;
         [SerializeField] float armsSmoothSpeed;
 
@@ -47,8 +45,6 @@ namespace Tturna.ThreeD.FPS
 
         private void Start()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-
             cc = GetComponent<CharacterController>();
             cam = Camera.main;
             wi = Tt_WeaponInventory.Instance;
@@ -57,7 +53,8 @@ namespace Tturna.ThreeD.FPS
 
         private void Update()
         {
-            Cursor.visible = false;
+            // Prevent execution when game is paused
+            if (Time.timeScale == 0) return;
 
             #region Inputs
             inputVector.x = Input.GetAxis("Horizontal");
@@ -148,10 +145,10 @@ namespace Tturna.ThreeD.FPS
 
             // Rotation
             Quaternion currentArmsRotation = fpsArms.transform.rotation;
-            transform.Rotate(Vector3.up * lookVector.x * horizontalSensitivity * Time.deltaTime);
+            transform.Rotate(Vector3.up * lookVector.x * GameController.instance.sensitivity * 8 * Time.deltaTime);
             fpsArms.transform.rotation = Quaternion.Lerp(currentArmsRotation, cam.transform.rotation, Time.deltaTime * armsSmoothSpeed);
 
-            camXAngle = Mathf.Clamp(camXAngle + lookVector.y * -verticalSensitivity * Time.deltaTime, -90, 90);
+            camXAngle = Mathf.Clamp(camXAngle + lookVector.y * -GameController.instance.sensitivity * 8 * Time.deltaTime, -90, 90);
             cam.transform.localEulerAngles = Vector3.right * camXAngle;
 
             // Check if grounded
@@ -193,16 +190,11 @@ namespace Tturna.ThreeD.FPS
             }
         }
 
-        public override void Death()
-        {
-            base.Death();
-        }
-
         void OnWeaponFired(Tt_Interactable weapon)
         {
             // Add a feeling of recoil by turning the player and the camera a little bit
             transform.Rotate(Vector3.up * Random.Range(-1f, 1f));
-            camXAngle = Mathf.Clamp(camXAngle + Random.Range(-1.5f, .5f), -90, 90);
+            camXAngle = Mathf.Clamp(camXAngle + Random.Range(-2f, 0), -90, 90);
         }
     }
 }

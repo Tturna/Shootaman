@@ -1,6 +1,7 @@
 // This script is designed to be inherited by objects that represent living creatures like players, enemies and NPCs
 
 using UnityEngine;
+using Tturna.Utility;
 
 namespace Tturna.ThreeD
 {
@@ -16,7 +17,7 @@ namespace Tturna.ThreeD
             if (currentHealth <= 0)
             {
                 currentHealth = 0;
-                Death();
+                Death(knockback, hitLimb, hitPoint, hitPoint - Tt_Helpers.MainCamera.transform.position);
             }
         }
 
@@ -26,11 +27,11 @@ namespace Tturna.ThreeD
             currentHealth = Mathf.Min(currentHealth, maxHealth);
         }
 
-        public virtual void Death() { }
-
+        // TODO:
+        // It's probably better if the Death() function didn't have these specific parameters and instead the deriving classes would implement that shit
         public virtual void Death(float knockback, GameObject hitLimb, Vector3 hitPoint, Vector3 camToHit)
         {
-            throw new System.NotImplementedException();
+            Debug.LogWarning($"GameObject {gameObject.name} has Agent script with no Death() function implemented.");
         }
     }
 }
